@@ -11,9 +11,13 @@ use form elements to provide a nicer means of input.
 After the user clicks on a button, they are given a series of prompts to answer.  As long as the user enters a valid
 password length and selects at least one category of characters, the app will output a password meeting their
 requirements.
+[See the password generator live.](https://s2robertson.github.io/password-generator/)
 
 ## Credits
 The initial files (HTML and CSS) were provided by University of Toronto Coding Bootcamp.
 
 ## License
 MIT
+
+## Screenshot
+![A screenshot of the password generator app](/Password-Generator-Screenshot.png)
