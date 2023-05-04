@@ -26,42 +26,30 @@ const categories = [
 ];
 
 function generatePassword() {
-    let numChars = 0;
-    while (true) {
-        numChars = parseInt(prompt('How many characters should the password be? (Min: 8, Max: 128)', ''));
-        if (numChars === null) {
-        return;
-        } else if (numChars >= 8 && numChars <= 128) {
-        break;
-        }
-    }
-
-    let values = '';
-    let ensure = [];
-    categories.forEach(category => {
-        const include = confirm(`Should the password include ${category.name}?`);
-        if (include) {
-            values += category.values;
-            ensure.push(category.values);
-        }
-    });
-    if (ensure.length === 0) {
-        alert('You didn\'t choose any characters.');
+    const numChars = getNumChars();
+    if (!numChars) {
         return;
     }
 
-    let password = new Array(numChars);
-    while (ensure.length > 0) {
-        const ensureIndex = Math.floor(Math.random() * ensure.length)
-        const categoryValues = ensure[ensureIndex];
-        const value = categoryValues[Math.floor(Math.random() * categoryValues.length)];
-        const passIndex = Math.floor(Math.random() * password.length);
+    const valuesByCategory = getCategories();
+    if (valuesByCategory.length === 0) {
+        alert('You didn\'t choose any categories.');
+        return;
+    }
 
-        if (password[passIndex] !== undefined) {
+    const password = new Array(numChars);
+    const flatValues = valuesByCategory.join('');
+
+    while (valuesByCategory.length > 0) {
+        const passwordIndex = Math.floor(Math.random() * password.length);
+        if (password[passwordIndex] !== undefined) {
             continue;
         }
-        password[passIndex] = value;
-        ensure.splice(ensureIndex, 1);
+
+        const categoryIndex = Math.floor(Math.random() * valuesByCategory.length)
+        const categoryValues = valuesByCategory[categoryIndex];
+        password[passwordIndex] = categoryValues[Math.floor(Math.random() * categoryValues.length)];
+        valuesByCategory.splice(categoryIndex, 1);
     }
 
     for (let i = 0; i < password.length; i++) {
@@ -69,10 +57,33 @@ function generatePassword() {
             continue;
         }
 
-        password[i] = values[Math.floor(Math.random() * values.length)];
+        password[i] = flatValues[Math.floor(Math.random() * flatValues.length)];
     }
 
     return password.join('');
+}
+
+function getNumChars() {
+    while (true) {
+        const numChars = parseInt(prompt('How many characters should the password be? (Min: 8, Max: 128)', ''));
+        if (numChars === null || (numChars >= 8 && numChars <= 128)) {
+            return numChars;
+        }
+    }
+}
+
+function getCategories() {
+    let valuesByCategory = [];
+    categories.forEach(category => {
+        if (confirm(`Should the password include ${category.name}?`)) {
+            valuesByCategory.push(category.values);
+        }
+    });
+    return valuesByCategory;
+}
+
+function generatePasswordFromValues(numChars, valuesByCategory) {
+    
 }
 
 // Add event listener to generate button
